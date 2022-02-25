@@ -21,6 +21,31 @@ class AgendasController < ApplicationController
     end
   end
 
+  def destroy
+    @agenda = Agenda.find(params[:id])
+    if current_user.id != @agenda.user_id
+      if current_user.id == @agenda.team.owner_id
+        @agenda.destroy
+        @assigns = Assign.where(team_id: @agenda.team_id)
+        @assigns.each do |assign|
+          @member = User.find_by(user_id: assign.user_id)
+          AssignMailer.destroy_agenda_mail(@member.email).deliver
+        end
+        redirect_to dashboard_url, notice: "Agenda was successfully deleted"
+      else
+        redirect_to dashboard_url, notice: "You cannot delete an agenda which does not belong to you"
+      end
+    else
+      @agenda.destroy
+      @assigns = Assign.where(team_id: @agenda.team_id)
+        @assigns.each do |assign|
+          @member = User.find_by(id: assign.user_id)
+          AssignMailer.destroy_agenda_mail(@member.email).deliver
+        end
+      redirect_to dashboard_url, notice: "Agenda was successfully deleted"
+    end
+  end
+
   private
 
   def set_agenda
