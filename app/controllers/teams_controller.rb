@@ -15,7 +15,8 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def edit; end
+  def edit
+  end
 
   def create
     @team = Team.new(team_params)
@@ -45,6 +46,13 @@ class TeamsController < ApplicationController
 
   def dashboard
     @team = current_user.keep_team_id ? Team.find(current_user.keep_team_id) : current_user.teams.first
+  end
+
+  def assign_owner
+    @team = Team.find_by(name: params[:id])
+    @team.update(owner_id: params[:owner_id])
+    AssignMailer.transfer_owner_mail(@team.owner.email).deliver
+    redirect_to team_path(@team.id), notice: "Successfully transfered the team owner"
   end
 
   private
