@@ -11,4 +11,9 @@ class AssignMailer < ApplicationMailer
     @email = email
     mail to: @email, subject: "Owner transfer is successful"
   end
+
+  def destroy_agenda_mail(email)
+    @email = email
+    mail to: @email, subject: "Agenda is destroyed"
+  end
 end

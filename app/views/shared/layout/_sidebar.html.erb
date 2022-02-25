@@ -50,6 +50,11 @@
                   <p>+ <%= I18n.t('views.messages.create_article') %></p>
                 <% end %>
               </li>
+              <li class="nav-item">
+                <%= link_to agenda_path(agenda.id), method: :delete, data: { confirm: "delete agenda?" }, class: 'nav-link' do %>
+                  <p>+ <%= "delete agenda" %></p>
+                <% end %>
+              </li>
             </ul>
           </li>
         <% end %>
